@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { SocialButton } from '@/components/ui/social-button'
 import { useAuth } from '@/hooks/useAuth'
 
 export default function SignUp() {
@@ -11,9 +12,10 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [socialLoading, setSocialLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
   
-  const { signUp } = useAuth()
+  const { signUp, signInWithOAuth } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,6 +44,20 @@ export default function SignUp() {
     }
   }
 
+  const handleSocialSignIn = async (provider: 'google' | 'facebook') => {
+    setSocialLoading(provider)
+    setError('')
+
+    const { error } = await signInWithOAuth(provider, '/onboarding')
+    
+    if (error) {
+      setError(error.message)
+      setSocialLoading(null)
+    }
+    // Note: On success, user will be redirected to the OAuth provider
+    // and then back to our callback URL with redirect to onboarding
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -53,7 +69,33 @@ export default function SignUp() {
             Start your personalized Human Design journey
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        
+        {/* Social Login Buttons */}
+        <div className="mt-8 space-y-4">
+          <SocialButton
+            provider="google"
+            onClick={() => handleSocialSignIn('google')}
+            loading={socialLoading === 'google'}
+            disabled={loading || socialLoading !== null}
+          />
+          <SocialButton
+            provider="facebook"
+            onClick={() => handleSocialSignIn('facebook')}
+            loading={socialLoading === 'facebook'}
+            disabled={loading || socialLoading !== null}
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="mt-6 mb-6 flex items-center">
+          <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+          <span className="px-4 text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900">
+            Or continue with email
+          </span>
+          <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+        </div>
+
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="sr-only">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase-client'
-import { type User } from '@supabase/supabase-js'
+import { type User, type Provider } from '@supabase/supabase-js'
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
@@ -43,6 +43,41 @@ export function useAuth() {
     return { data, error }
   }
 
+  const signInWithOAuth = async (provider: Provider, nextUrl?: string) => {
+    try {
+      const callbackUrl = `${window.location.origin}/auth/callback`
+      const redirectTo = nextUrl ? `${callbackUrl}?next=${encodeURIComponent(nextUrl)}` : callbackUrl
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo,
+        },
+      })
+
+      if (error) {
+        // Enhanced error handling for OAuth
+        let message = error.message
+        if (error.message.includes('OAuth')) {
+          message = `Unable to connect to ${provider}. Please try again or use email/password.`
+        } else if (error.message.includes('network')) {
+          message = 'Network error. Please check your connection and try again.'
+        }
+        return { data, error: { ...error, message } }
+      }
+
+      return { data, error }
+    } catch (err) {
+      return { 
+        data: null, 
+        error: { 
+          message: `Failed to connect with ${provider}. Please try again.`,
+          status: 500 
+        } 
+      }
+    }
+  }
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut()
     return { error }
@@ -53,6 +88,7 @@ export function useAuth() {
     loading,
     signUp,
     signIn,
+    signInWithOAuth,
     signOut,
   }
 }
