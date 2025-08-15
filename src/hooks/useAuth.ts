@@ -29,7 +29,10 @@ export function useAuth() {
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('Redirecting to dashboard for user:', session.user.email)
           // Use router.replace instead of push to prevent back button issues
-          router.replace('/dashboard')
+          // Add a small delay to ensure auth state is fully established
+          setTimeout(() => {
+            router.replace('/dashboard')
+          }, 500)
         }
       }
     )

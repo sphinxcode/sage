@@ -51,10 +51,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/signin', request.url))
   }
 
-  // Redirect authenticated users from auth pages
-  if (request.nextUrl.pathname.startsWith('/auth') && user) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
+  // DISABLED: Let client-side routing handle authenticated user redirects
+  // This was causing redirect loops during authentication
+  // if (request.nextUrl.pathname.startsWith('/auth') && user) {
+  //   return NextResponse.redirect(new URL('/dashboard', request.url))
+  // }
 
   return supabaseResponse
 }
