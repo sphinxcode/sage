@@ -25,22 +25,22 @@ export interface HumanDesignProfile {
   profile: string
   strategy: string
   authority: string
-  channels_short: any
-  centers: any
+  channels_short: Record<string, unknown>
+  centers: Record<string, unknown>
   incarnation_cross: string
   definition: string
   signature: string
   not_self_theme: string
   cognition: string
   determination: string
-  variables: any
+  variables: Record<string, unknown>
   motivation: string
   transference: string
   perspective: string
   distraction: string
-  circuitries: any
-  channels_long: any
-  gates: any
+  circuitries: Record<string, unknown>
+  channels_long: Record<string, unknown>
+  gates: Record<string, unknown>
   // Design planetary positions
   design_sun: string
   design_earth: string
@@ -91,7 +91,7 @@ export interface ChatMessage {
   content: string
   role: 'user' | 'assistant'
   created_at: string
-  metadata: any
+  metadata: Record<string, unknown>
 }
 
 // User Settings types
@@ -121,8 +121,8 @@ export interface WebhookLog {
   id: string
   user_id: string
   webhook_type: string
-  payload: any
-  response: any
+  payload: Record<string, unknown>
+  response: Record<string, unknown>
   status: string
   created_at: string
 }
