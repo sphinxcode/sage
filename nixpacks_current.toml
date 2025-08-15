@@ -1,0 +1,13 @@
+[phases.setup]
+nixPkgs = ['flutter', 'nginx', 'bash']
+
+[phases.build]
+cmds = [
+    'flutter --disable-telemetry',
+    'flutter pub get', 
+    'flutter build web --release --no-tree-shake-icons',
+    'chmod +x start.sh'
+]
+
+[start]
+cmd = 'bash start.sh'

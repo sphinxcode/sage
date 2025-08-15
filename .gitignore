@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,29 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# SAGE specific
+test-*.mjs
+test-*.js
+*test*.mjs
+*test*.js
+sage_auth_session
+deployed.html
+tmp.*
+*.tar.gz
+workflow-table-fixes-summary.md
+fix-*.sql
+fix-workflow-tables.mjs
+
+# System directories
+.ICE-unix/
+.Test-unix/
+.X11-unix/
+.XIM-unix/
+.font-unix/
+snap-private-tmp/
+systemd-private-*/
+update-check/
+
+# Claude specific
+.claude/
