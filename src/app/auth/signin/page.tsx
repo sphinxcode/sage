@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -14,22 +14,34 @@ export default function SignIn() {
   const [socialLoading, setSocialLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
   
-  const { signIn, signInWithOAuth } = useAuth()
+  const { signIn, signInWithOAuth, user } = useAuth()
   const router = useRouter()
+
+  // Fallback redirect if user is already authenticated
+  useEffect(() => {
+    if (user && !loading) {
+      console.log('User already authenticated, redirecting to dashboard')
+      router.replace('/dashboard')
+    }
+  }, [user, loading, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    const { error } = await signIn(email, password)
+    console.log('Attempting signin for:', email)
+    const { error, data } = await signIn(email, password)
     
     if (error) {
+      console.error('Signin error:', error)
       setError(error.message)
       setLoading(false)
+    } else {
+      console.log('Signin successful:', data)
+      // Keep loading state until redirect happens
+      // The useAuth hook will handle the redirect
     }
-    // Note: Successful authentication will be handled by useAuth hook's onAuthStateChange
-    // which will automatically redirect to dashboard
   }
 
   const handleSocialSignIn = async (provider: 'google' | 'facebook') => {

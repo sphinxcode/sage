@@ -21,21 +21,21 @@ export function useAuth() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state change:', event, session?.user?.email)
         setUser(session?.user ?? null)
         setLoading(false)
         
         // Handle successful signin - redirect to dashboard
         if (event === 'SIGNED_IN' && session?.user) {
-          // Small delay to ensure state is updated
-          setTimeout(() => {
-            router.push('/dashboard')
-          }, 100)
+          console.log('Redirecting to dashboard for user:', session.user.email)
+          // Use router.replace instead of push to prevent back button issues
+          router.replace('/dashboard')
         }
       }
     )
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [router])
 
   const signUp = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signUp({
