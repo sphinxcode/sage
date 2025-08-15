@@ -27,9 +27,9 @@ export default function SignIn() {
     if (error) {
       setError(error.message)
       setLoading(false)
-    } else {
-      router.push('/dashboard')
     }
+    // Note: Successful authentication will be handled by useAuth hook's onAuthStateChange
+    // which will automatically redirect to dashboard
   }
 
   const handleSocialSignIn = async (provider: 'google' | 'facebook') => {

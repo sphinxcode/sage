@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-client'
 import { type User, type Provider } from '@supabase/supabase-js'
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     // Get initial session
@@ -21,6 +23,14 @@ export function useAuth() {
       async (event, session) => {
         setUser(session?.user ?? null)
         setLoading(false)
+        
+        // Handle successful signin - redirect to dashboard
+        if (event === 'SIGNED_IN' && session?.user) {
+          // Small delay to ensure state is updated
+          setTimeout(() => {
+            router.push('/dashboard')
+          }, 100)
+        }
       }
     )
 
